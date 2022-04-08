@@ -23,8 +23,6 @@ func main(){
 		log.Fatalf("Error in reading env file: %s", err.Error())
 	}
 
-	port := viper.GetString("server.port")
-
 	db, err := postgres.NewPostgresDB(postgres.Config{
 		Host: viper.GetString("database.host"),
 		Port: viper.GetString("database.port"),
@@ -41,6 +39,7 @@ func main(){
 	services := service.NewService(repos)
 	handlers := handler.NewHandler(services)
 
+	port := viper.GetString("server.port")
 	restSrv := server.NewServer(handlers.InitRoutes(), port)
 
 	go func() {
