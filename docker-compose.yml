@@ -1,24 +1,12 @@
 version: '3.4'
 
 services:
-  nginx:
-    container_name: nginx
-    image: nginx:1.16-alpine
-    restart: always
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-    depends_on:
-      - server
-    command: "nginx -g 'daemon off;'"
-
   server:
-    container_name: server
+    container_name: application
     restart: unless-stopped
     build:
       context: ./
-      dockerfile: ./docker/Dockerfile
+      dockerfile: deployment/docker/Dockerfile
     command: ./app
     depends_on:
       - postgres

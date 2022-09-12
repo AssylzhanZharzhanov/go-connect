@@ -30,5 +30,4 @@ migrate-force:
 migrate-drop:
 	migrate -path ./migrations -database "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable" drop
 
-
 .DEFAULT_GOAL := run
