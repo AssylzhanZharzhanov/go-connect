@@ -6,9 +6,12 @@ import (
 	"time"
 
 	"github.com/AssylzhanZharzhanov/connect/internal/config"
+	eventHandlerV1 "github.com/AssylzhanZharzhanov/connect/internal/event/delivery/http/v1"
 	eventRepository "github.com/AssylzhanZharzhanov/connect/internal/event/repository"
 	eventUseCase "github.com/AssylzhanZharzhanov/connect/internal/event/usecase"
 	"github.com/AssylzhanZharzhanov/connect/pkg/db/postgres"
+
+	"github.com/gin-gonic/gin"
 )
 
 type App struct {
@@ -38,14 +41,22 @@ func (s *App) Run() error {
 	eventsRepository := eventRepository.NewRepository(db)
 
 	//Service layer
-	_ = eventUseCase.NewUseCase(eventsRepository)
-	//Handler layer
+	eventsUseCase := eventUseCase.NewUseCase(eventsRepository)
 
-	// initialize controllers or handlers
+	router := gin.Default()
+	router.Use(
+		gin.Recovery(),
+		gin.Logger(),
+	)
+
+	api := router.Group("/api")
+
+	//Handler layer
+	eventHandlerV1.RegisterEndpoints(api, eventsUseCase)
 
 	s.httpServer = &http.Server{
-		Addr: ":" + s.cfg.Port,
-		//Handler:        s.Handlers,
+		Addr:           ":" + s.cfg.Port,
+		Handler:        router,
 		MaxHeaderBytes: 1 << 20,
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
