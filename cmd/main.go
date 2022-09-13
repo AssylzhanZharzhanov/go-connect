@@ -2,17 +2,21 @@ package main
 
 import (
 	"context"
-	"github.com/AssylzhanZharzhanov/connect/pkg/utils"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/AssylzhanZharzhanov/connect/internal/application"
+	"github.com/AssylzhanZharzhanov/connect/pkg/utils"
 	"github.com/sirupsen/logrus"
 )
 
 func main() {
+
+	var (
+		ctx = context.Background()
+	)
 
 	cfg, err := utils.LoadConfig()
 	if err != nil {
@@ -30,7 +34,7 @@ func main() {
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
 	<-quit
 
-	if err := app.Shutdown(context.Background()); err != nil {
+	if err := app.Shutdown(ctx); err != nil {
 		logrus.Errorf("error occured on application shutting down: %s", err.Error())
 	}
 }
