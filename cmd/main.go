@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"github.com/AssylzhanZharzhanov/connect/internal/config"
+	"github.com/AssylzhanZharzhanov/connect/pkg/utils"
 	"log"
 	"os"
 	"os/signal"
@@ -10,25 +10,18 @@ import (
 
 	"github.com/AssylzhanZharzhanov/connect/internal/application"
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 )
-
-func init() {
-	viper.AddConfigPath("config")
-	viper.SetConfigName("config")
-	err := viper.ReadInConfig()
-	if err != nil {
-		log.Fatalf("Error in reading env file: %s", err.Error())
-	}
-}
 
 func main() {
 
-	//load config
+	cfg, err := utils.LoadConfig()
+	if err != nil {
+		return
+	}
 
-	restSrv := application.NewApp(config.Config{})
+	app := application.NewApp(cfg)
 	go func() {
-		if err := restSrv.Run(); err != nil {
+		if err := app.Run(); err != nil {
 			log.Fatalf("Error in starting application: %s", err.Error())
 		}
 	}()
@@ -37,7 +30,7 @@ func main() {
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
 	<-quit
 
-	if err := restSrv.Shutdown(context.Background()); err != nil {
+	if err := app.Shutdown(context.Background()); err != nil {
 		logrus.Errorf("error occured on application shutting down: %s", err.Error())
 	}
 }

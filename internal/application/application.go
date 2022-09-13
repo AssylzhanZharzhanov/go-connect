@@ -8,11 +8,11 @@ import (
 )
 
 type App struct {
-	cfg        config.Config
+	cfg        config.AppConfig
 	httpServer *http.Server
 }
 
-func NewApp(cfg config.Config) *App {
+func NewApp(cfg config.AppConfig) *App {
 	return &App{
 		cfg: cfg,
 	}
