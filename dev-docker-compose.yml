@@ -2,16 +2,16 @@ version: '3.4'
 
 services:
   app:
-    container_name: app
-    restart: unless-stopped
-    build:
-      context: ./
-      dockerfile: deployment/docker/Dockerfile
+    image: golang:1.17-alpine
+    working_dir: /app
+    command: go run cmd/main.go
+    ports:
+      - "8000:8000"
     depends_on:
       - postgres
       - jaeger
-    ports:
-      - "8000:8000"
+    volumes:
+      - ./:/app
     env_file:
       - config/config.env
 
@@ -20,7 +20,7 @@ services:
     image: postgres:13.4
     restart: always
     volumes:
-      - ./postgres_data:/var/lib/postgresql/data:z
+      - postgres_data:/var/lib/postgresql/data:z
     environment:
       POSTGRES_USER: postgres
       POSTGRES_DB: postgres
@@ -43,3 +43,7 @@ services:
       - "14268:14268"
       - "14250:14250"
       - "9411:9411"
+
+volumes:
+  postgres_data:
+    driver: local

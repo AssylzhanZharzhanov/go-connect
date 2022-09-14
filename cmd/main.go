@@ -9,6 +9,7 @@ import (
 
 	"github.com/AssylzhanZharzhanov/connect/internal/application"
 	"github.com/AssylzhanZharzhanov/connect/pkg/utils"
+
 	"github.com/sirupsen/logrus"
 )
 
@@ -30,6 +31,7 @@ func main() {
 		}
 	}()
 
+	//graceful shutdown
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
 	<-quit

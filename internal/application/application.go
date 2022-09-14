@@ -2,6 +2,8 @@ package application
 
 import (
 	"context"
+	"github.com/AssylzhanZharzhanov/connect/pkg/jaeger"
+	"github.com/opentracing/opentracing-go"
 	"net/http"
 	"time"
 
@@ -31,16 +33,25 @@ func NewApp(cfg config.AppConfig) *App {
 func (s *App) Run() error {
 
 	router := gin.Default()
-	router.Use(
-		gin.Recovery(),
-		gin.Logger(),
-	)
+	//router.Use(
+	//	gin.Recovery(),
+	//	gin.Logger(),
+	//)
 
 	api := router.Group("/api")
 
-	// initialize tracer
 	// initialize logger
 	// initialize kafka connection
+
+	// enable tracing
+	if s.cfg.Enable {
+		tracer, closer, err := jaeger.NewJaegerTracer(s.cfg)
+		if err != nil {
+			return err
+		}
+		defer closer.Close()
+		opentracing.SetGlobalTracer(tracer)
+	}
 
 	//db connection
 	db, err := postgres.NewPostgresDB(s.cfg.DSN)
