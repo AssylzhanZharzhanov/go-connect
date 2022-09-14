@@ -10,6 +10,7 @@ type repository struct {
 	db *sqlx.DB
 }
 
+// NewRepository - reates a new "EventRepository".
 func NewRepository(db *sqlx.DB) domain.EventRepository {
 	return repository{
 		db: db,

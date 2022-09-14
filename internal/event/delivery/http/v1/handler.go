@@ -6,30 +6,39 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type handler struct {
+// Handler - represents handler
+type Handler struct {
 	useCase domain.EventUseCase
 }
 
-func NewHandler(useCase domain.EventUseCase) handler {
-	return handler{}
+// NewHandler - creates a new handler with necessary dependencies
+func NewHandler(useCase domain.EventUseCase) Handler {
+	return Handler{
+		useCase: useCase,
+	}
 }
 
-func (h *handler) Create(c *gin.Context) {
-
-}
-
-func (h *handler) List(c *gin.Context) {
-
-}
-
-func (h *handler) Get(c *gin.Context) {
+// Create - Impl.
+func (h *Handler) Create(c *gin.Context) {
 
 }
 
-func (h *handler) Update(c *gin.Context) {
+// List - Impl.
+func (h *Handler) List(c *gin.Context) {
 
 }
 
-func (h *handler) Delete(c *gin.Context) {
+// Get - Impl.
+func (h *Handler) Get(c *gin.Context) {
+
+}
+
+// Update - Impl.
+func (h *Handler) Update(c *gin.Context) {
+
+}
+
+// Delete - Impl.
+func (h *Handler) Delete(c *gin.Context) {
 
 }

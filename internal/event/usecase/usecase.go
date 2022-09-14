@@ -6,6 +6,7 @@ type useCase struct {
 	repository domain.EventRepository
 }
 
+// NewUseCase - creates a new "EventUseCase"
 func NewUseCase(repository domain.EventRepository) domain.EventUseCase {
 	return useCase{
 		repository: repository,

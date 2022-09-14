@@ -1,5 +1,6 @@
 package domain
 
+// EventUseCase - represents use case layer
 type EventUseCase interface {
 	CreateEvent(dto CreateEventRequestDTO) error
 	GetEvent(eventID EventID) (*Event, error)

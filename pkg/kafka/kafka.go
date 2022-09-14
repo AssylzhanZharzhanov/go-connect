@@ -1,5 +1,1 @@
 package kafka
-
-func NewDialer() {
-
-}

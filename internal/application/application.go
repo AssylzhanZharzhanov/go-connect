@@ -14,18 +14,29 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// App - stores all configuration of the application.
 type App struct {
 	cfg        config.AppConfig
 	httpServer *http.Server
 }
 
+// NewApp - creates a new application
 func NewApp(cfg config.AppConfig) *App {
 	return &App{
 		cfg: cfg,
 	}
 }
 
+// Run - starts application
 func (s *App) Run() error {
+
+	router := gin.Default()
+	router.Use(
+		gin.Recovery(),
+		gin.Logger(),
+	)
+
+	api := router.Group("/api")
 
 	// initialize tracer
 	// initialize logger
@@ -43,14 +54,6 @@ func (s *App) Run() error {
 	//Service layer
 	eventsUseCase := eventUseCase.NewUseCase(eventsRepository)
 
-	router := gin.Default()
-	router.Use(
-		gin.Recovery(),
-		gin.Logger(),
-	)
-
-	api := router.Group("/api")
-
 	//Handler layer
 	eventHandlerV1.RegisterEndpoints(api, eventsUseCase)
 
@@ -67,6 +70,7 @@ func (s *App) Run() error {
 	// initialize kafka consumer
 }
 
+// Shutdown - stops application
 func (s *App) Shutdown(ctx context.Context) error {
 	return s.httpServer.Shutdown(ctx)
 }
