@@ -2,13 +2,14 @@ package v1
 
 import (
 	"github.com/AssylzhanZharzhanov/connect/internal/event/domain"
+	"go.uber.org/zap"
 
 	"github.com/gin-gonic/gin"
 )
 
 // RegisterEndpoints - registers new endpoints
-func RegisterEndpoints(router *gin.RouterGroup, useCase domain.EventUseCase) {
-	h := NewHandler(useCase)
+func RegisterEndpoints(router *gin.RouterGroup, useCase domain.EventUseCase, logger *zap.SugaredLogger) {
+	h := NewHandler(useCase, logger)
 
 	users := router.Group("/events")
 	{

@@ -22,3 +22,12 @@ func StartHTTPServerTracerSpan(c *gin.Context, operationName string) (context.Co
 
 	return ctx, serverSpan
 }
+
+func TraceWithErr(span opentracing.Span, err error) error {
+	if err != nil {
+		span.SetTag("error", true)
+		span.LogKV("error_code", err.Error())
+	}
+
+	return err
+}

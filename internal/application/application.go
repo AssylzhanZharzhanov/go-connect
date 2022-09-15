@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/AssylzhanZharzhanov/connect/pkg/jaeger"
 	"github.com/opentracing/opentracing-go"
+	"go.uber.org/zap"
 	"net/http"
 	"time"
 
@@ -31,14 +32,13 @@ func NewApp(cfg config.AppConfig) *App {
 
 // Run - starts application
 func (s *App) Run() error {
+	router := gin.New()
 
-	router := gin.Default()
-	//router.Use(
-	//	gin.Recovery(),
-	//	gin.Logger(),
-	//)
-
-	api := router.Group("/api")
+	zapLogger, _ := zap.NewProduction()
+	defer func() {
+		_ = zapLogger.Sync()
+	}()
+	logger := zapLogger.Sugar()
 
 	// initialize logger
 	// initialize kafka connection
@@ -66,7 +66,8 @@ func (s *App) Run() error {
 	eventsUseCase := eventUseCase.NewUseCase(eventsRepository)
 
 	//Handler layer
-	eventHandlerV1.RegisterEndpoints(api, eventsUseCase)
+	api := router.Group("/api")
+	eventHandlerV1.RegisterEndpoints(api, eventsUseCase, logger)
 
 	s.httpServer = &http.Server{
 		Addr:           ":" + s.cfg.Port,

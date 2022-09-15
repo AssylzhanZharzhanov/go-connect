@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"go.uber.org/zap"
 	"net/http"
 
 	"github.com/AssylzhanZharzhanov/connect/internal/event/domain"
@@ -13,12 +14,14 @@ import (
 // Handler - represents handler
 type Handler struct {
 	useCase domain.EventUseCase
+	logger  *zap.SugaredLogger
 }
 
 // NewHandler - creates a new handler with necessary dependencies
-func NewHandler(useCase domain.EventUseCase) Handler {
+func NewHandler(useCase domain.EventUseCase, logger *zap.SugaredLogger) Handler {
 	return Handler{
 		useCase: useCase,
+		logger:  logger,
 	}
 }
 
@@ -30,12 +33,14 @@ func (h *Handler) Create(c *gin.Context) {
 	var input domain.CreateEventRequestDTO
 
 	if err := c.BindJSON(&input); err != nil {
-		errors.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		h.logger.Infof("events.Create err: %v", jaeger.TraceWithErr(span, err))
+		errors.NewErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	err := h.useCase.CreateEvent(ctx, input)
 	if err != nil {
+		h.logger.Infof("events.Create err: %v", jaeger.TraceWithErr(span, err))
 		errors.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
