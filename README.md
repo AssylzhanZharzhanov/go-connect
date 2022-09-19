@@ -1,4 +1,13 @@
-# connect
+# connect [IN PROGRESS]
+
+#### Full list what has been used:
+[Gin](https://github.com/gin-gonic/gin) web framework <br/>
+[Elasticsearch](https://github.com/elastic/go-elasticsearch) client for Go <br/>
+[Kafka](https://github.com/segmentio/kafka-go) as messages broker<br/>
+[Jaeger](https://www.jaegertracing.io/) open source, end-to-end distributed [tracing](https://opentracing.io/) <br/>
+[Prometheus](https://prometheus.io/) monitoring and alerting <br/>
+[Kibana](https://github.com/labstack/echo) is user interface that lets you visualize your Elasticsearch <br/>
+[Docker](https://www.docker.com/) and docker-compose <br/>
 
 ## Project structure:
 1. /api
